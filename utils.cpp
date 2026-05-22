@@ -110,5 +110,3 @@ inline void quartiles(std::vector<double>& data, std::vector<double>& q)
         q[3] = 0.75 * data[p - 1] + 0.25 * data[p];
     }
 }
-
-#endif
