@@ -41,7 +41,7 @@ int main(int argc, char *argv[])
     // Set up random number generation
     std::random_device rd;
     std::mt19937_64 rng(rd());
-    std::uniform_int_distribution<std::int64_t> u_distr; // change depending on app
+    std::uniform_int_distribution<std::int64_t> u_distr;
 
     // File to write time data
     std::ofstream time_data;
@@ -51,16 +51,24 @@ int main(int argc, char *argv[])
     // Begin testing
     std::cerr << "\033[0;36mRunning tests...\033[0m" << std::endl << std::endl;
     executed_runs = 0;
-    for (n = lower; n <= upper; n += step) {
+    for (n = lower; n <= upper; n *= step) {
         mean_time = 0;
         time_stdev = 0;
 
         // Test configuration goes here
-
+        std::vector<std::vector<int>> A(n, std::vector<int>(n));
+        std::vector<std::vector<int>> B(n, std::vector<int>(n));
+        
+        for (std::int64_t r = 0; r < n; r++) {
+            for (std::int64_t c = 0; c < n; c++) {
+                A[r][c] = u_distr(rng);
+                B[r][c] = u_distr(rng);
+            }
+        }
         // Run to compute elapsed time
         for (i = 0; i < runs; i++) {
             // Remember to change total depending on step type
-            display_progress(++executed_runs, total_runs_additive);
+            display_progress(++executed_runs, total_runs_multiplicative);
 
             begin_time = std::chrono::high_resolution_clock::now();
             // Function to test goes here
