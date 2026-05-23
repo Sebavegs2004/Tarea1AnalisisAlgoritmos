@@ -18,7 +18,7 @@
 #include <vector>
 
 #include "utils.cpp"
-
+#include "algorithms.cpp"
 // Include to be tested files here
 
 int main(int argc, char *argv[])
@@ -36,12 +36,12 @@ int main(int argc, char *argv[])
     double mean_time, time_stdev, dev;
     auto begin_time = std::chrono::high_resolution_clock::now();
     auto end_time = std::chrono::high_resolution_clock::now();
-    std::chrono::duration<double, std::nano> elapsed_time = end_time - begin_time;
+    std::chrono::duration<double, std::milli> elapsed_time = end_time - begin_time;
 
     // Set up random number generation
     std::random_device rd;
     std::mt19937_64 rng(rd());
-    std::uniform_int_distribution<std::int64_t> u_distr;
+    std::uniform_int_distribution<std::int64_t> u_distr(-10,10);
 
     // File to write time data
     std::ofstream time_data;
@@ -58,7 +58,9 @@ int main(int argc, char *argv[])
         // Test configuration goes here
         std::vector<std::vector<int>> A(n, std::vector<int>(n));
         std::vector<std::vector<int>> B(n, std::vector<int>(n));
-        
+        std::vector<std::vector<int>> C_clasico(n, std::vector<int>(n));
+        std::vector<std::vector<int>> C_strassen(n, std::vector<int>(n));
+
         for (std::int64_t r = 0; r < n; r++) {
             for (std::int64_t c = 0; c < n; c++) {
                 A[r][c] = u_distr(rng);
@@ -72,6 +74,7 @@ int main(int argc, char *argv[])
 
             begin_time = std::chrono::high_resolution_clock::now();
             // Function to test goes here
+            C_clasico = Strassen(A,B, A.size());
             end_time = std::chrono::high_resolution_clock::now();
 
             elapsed_time = end_time - begin_time;
