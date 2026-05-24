@@ -7,113 +7,129 @@
 #include <cstdlib>
 #include <iostream>
 #include <stdexcept>
+#include <string>
 #include <vector>
 #include <random>
 
-void ImprimirMatriz(const std::vector<int>& M, int n) {
-    for (int fila = 0; fila < n; fila++) {
-        std::cout << "               ";
-        for (int columna = 0; columna < n; columna++) {
-            std::cout << M[fila * n + columna] << " ";
-        }
-        std::cout << '\n';
-    }
-}
+// Algoritmo clasico
 
-std::vector<int> CrearMatrizAleatoriaCuadrada(int n) {
-    std::vector<int> M(n * n);
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_int_distribution<> dist(1, 10);
-
-    for (int i = 0; i < n * n; i++) {
-        M[i] = dist(gen);
-    }
-
-    return M;
-}
-
-std::vector<int> matrix_multiplication(
-    const std::vector<int>& A, 
-    const std::vector<int>& B,
-    int n
+std::vector<std::vector<int>> matrix_multiplication(
+    const std::vector<std::vector<int>>& A, 
+    const std::vector<std::vector<int>>& B
 ){
-    std::vector<int> C(n * n, 0); 
+    int n = A.size(); // Asumimos matriz cuadrada, filas y columnas = n
+    std::vector<std::vector<int>> C(n, std::vector<int>(n,0)); // Matriz resultante C=A*B
 
-    for(int r = 0; r < n; r++){
-        for(int k = 0; k < n; k++){
-            int temp = A[r * n + k];
-            for(int c = 0; c < n; c++){
-                C[r * n + c] += temp * B[k * n + c];
+    for(int r=0; r<n; r++){
+        for(int c=0; c<n; c++){
+            for(int k=0; k<n; k++){
+                C[r][c] += (A[r][k]*B[k][c]);
             }
         }
     }
     return C;
 }
 
-std::vector<int> Suma(const std::vector<int>& A, const std::vector<int>& B) {
-    std::vector<int> C(A.size());
-    for(size_t i = 0; i < A.size(); i++){
-        C[i] = A[i] + B[i];
-    }  
-    return C;
-}
+// Strassen
 
-std::vector<int> Resta(const std::vector<int>& A, const std::vector<int>& B) {
-    std::vector<int> C(A.size());
-    for(size_t i = 0; i < A.size(); i++){
-        C[i] = A[i] - B[i];
-    }  
-    return C;
-}
-
-std::vector<int> Strassen(
-    const std::vector<int>& A,
-    const std::vector<int>& B,
+// Funcion para sumar dos matrices
+std::vector<std::vector<int>> Suma(
+    const std::vector<std::vector<int>>& A,
+    const std::vector<std::vector<int>>& B,
     int n
 ) {
-    if (n == 1) { 
-        std::vector<int> C(1);
-        C[0] = A[0] * B[0];
+    std::vector<std::vector<int>> C(n, std::vector<int>(n));
+    for(int filas = 0; filas < n; filas++){
+        for(int columnas = 0; columnas < n; columnas++){
+            C[filas][columnas] = A[filas][columnas] + B[filas][columnas];
+        }
+    }  
+    return C;
+}
+
+// Funcion para restar dos matrices
+std::vector<std::vector<int>> Resta(
+    const std::vector<std::vector<int>>& A,
+    const std::vector<std::vector<int>>& B,
+    int n
+) {
+    std::vector<std::vector<int>> C(n, std::vector<int>(n));
+    for(int filas = 0; filas < n; filas++){
+        for(int columnas = 0; columnas < n; columnas++){
+            C[filas][columnas] = A[filas][columnas] - B[filas][columnas];
+        }
+    }  
+    return C;
+}
+
+// Implementacion del algoritmo strassen
+std::vector<std::vector<int>> Strassen(
+    const std::vector<std::vector<int>>& A,
+    const std::vector<std::vector<int>>& B,
+    int n
+) {
+    if (n == 1){
+        std::vector<std::vector<int>> C(1, std::vector<int>(1));
+        C[0][0] = A[0][0] * B[0][0];
         return C;
     }
+    int m;
+    m = n / 2;
 
-    int m = n / 2;
-    int m2 = m * m;
+    std::vector<std::vector<int>> A11(m, std::vector<int>(m)); 
+    std::vector<std::vector<int>> A12(m, std::vector<int>(m)); 
+    std::vector<std::vector<int>> A21(m, std::vector<int>(m)); 
+    std::vector<std::vector<int>> A22(m, std::vector<int>(m)); 
 
-    std::vector<int> A11(m2), A12(m2), A21(m2), A22(m2); 
-    std::vector<int> B11(m2), B12(m2), B21(m2), B22(m2); 
+    std::vector<std::vector<int>> B11(m, std::vector<int>(m)); 
+    std::vector<std::vector<int>> B12(m, std::vector<int>(m)); 
+    std::vector<std::vector<int>> B21(m, std::vector<int>(m)); 
+    std::vector<std::vector<int>> B22(m, std::vector<int>(m)); 
 
-    for(int i = 0; i < m; i++){
-        for(int j = 0; j < m; j++){
-            A11[i * m + j] = A[i * n + j];
-            A12[i * m + j] = A[i * n + (m + j)];
-            A21[i * m + j] = A[(m + i) * n + j];
-            A22[i * m + j] = A[(m + i) * n + (m + j)];
-
-            B11[i * m + j] = B[i * n + j];
-            B12[i * m + j] = B[i * n + (m + j)];
-            B21[i * m + j] = B[(m + i) * n + j];
-            B22[i * m + j] = B[(m + i) * n + (m + j)];
+    for(int fila = 0; fila < m; fila++){
+        for(int columna = 0; columna < m; columna++){
+            A11[fila][columna] = A[fila][columna];
+            A12[fila][columna] = A[fila][m + columna];
+            A21[fila][columna] = A[m + fila][columna];
+            A22[fila][columna] = A[m + fila][m + columna];
+            B11[fila][columna] = B[fila][columna];
+            B12[fila][columna] = B[fila][m + columna];
+            B21[fila][columna] = B[m + fila][columna];
+            B22[fila][columna] = B[m + fila][m + columna];
         }
     }
 
-    auto M1 = Strassen(Suma(A11, A22), Suma(B11, B22), m);
-    auto M2 = Strassen(Suma(A21, A22), B11, m);
-    auto M3 = Strassen(A11, Resta(B12, B22), m);
-    auto M4 = Strassen(A22, Resta(B21, B11), m);
-    auto M5 = Strassen(Suma(A11, A12), B22, m);
-    auto M6 = Strassen(Resta(A21, A11), Suma(B11, B12), m);
-    auto M7 = Strassen(Resta(A12, A22), Suma(B21, B22), m);
+    auto M1 = Strassen(Suma(A11, A22, m), Suma(B11, B22, m), m);
+    auto M2 = Strassen(Suma(A21, A22, m), B11, m);
+    auto M3 = Strassen(A11, Resta(B12, B22, m), m);
+    auto M4 = Strassen(A22, Resta(B21, B11, m), m);
+    auto M5 = Strassen(Suma(A11, A12, m), B22, m);
+    auto M6 = Strassen(Resta(A21, A11, m), Suma(B11, B12, m), m);
+    auto M7 = Strassen(Resta(A12, A22, m), Suma(B21, B22, m), m);
 
-    std::vector<int> C(n * n); 
 
-    for(int i = 0; i < m; i++){
-        for(int j = 0; j < m; j++){
-            C[i * n + j]             = M1[i * m + j] + M4[i * m + j] - M5[i * m + j] + M7[i * m + j];
-            C[i * n + (m + j)]       = M3[i * m + j] + M5[i * m + j];
-            C[(m + i) * n + j]       = M2[i * m + j] + M4[i * m + j];
-            C[(m + i) * n + (m + j)] = M1[i * m + j] - M2[i * m + j] + M3[i * m + j] + M6[i * m + j];
+    std::vector<std::vector<int>> C11(m, std::vector<int>(m)); 
+    std::vector<std::vector<int>> C12(m, std::vector<int>(m)); 
+    std::vector<std::vector<int>> C21(m, std::vector<int>(m)); 
+    std::vector<std::vector<int>> C22(m, std::vector<int>(m)); 
+
+    for(int filas = 0; filas < m; filas++){
+        for(int columnas = 0; columnas < m; columnas++){
+            C11[filas][columnas] = M1[filas][columnas] + M4[filas][columnas] - M5[filas][columnas] + M7[filas][columnas];
+            C12[filas][columnas] = M3[filas][columnas] + M5[filas][columnas];
+            C21[filas][columnas] = M2[filas][columnas] + M4[filas][columnas];
+            C22[filas][columnas] = M1[filas][columnas] - M2[filas][columnas] + M3[filas][columnas] + M6[filas][columnas];
+        }
+    }
+
+    std::vector<std::vector<int>> C(n, std::vector<int>(n)); 
+
+    for(int filas = 0; filas < m; filas++){
+        for(int columnas = 0; columnas < m; columnas++){
+            C[filas][columnas] = C11[filas][columnas];
+            C[filas][m + columnas] = C12[filas][columnas];
+            C[m + filas][columnas] = C21[filas][columnas];
+            C[m + filas][m + columnas] = C22[filas][columnas];
         }
     }
 
