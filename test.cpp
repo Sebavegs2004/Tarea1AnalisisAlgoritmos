@@ -12,9 +12,9 @@ int main(int argc, char* argv[]){
     auto C_clasico = matrix_multiplication(A,B, n);
     auto C_strassen = Strassen(A,B, A.size());
 
-    ImprimirMatriz(A, n);
-    ImprimirMatriz(B, n);
+    ImprimirMatriz(A);
+    ImprimirMatriz(B);
 
-    ImprimirMatriz(C_clasico, n);
-    ImprimirMatriz(C_strassen, n);
+    ImprimirMatriz(C_clasico);
+    ImprimirMatriz(C_strassen);
 }

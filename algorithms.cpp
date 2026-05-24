@@ -11,6 +11,31 @@
 #include <vector>
 #include <random>
 
+void ImprimirMatriz(const std::vector<std::vector<int>>& M) {
+    for (int fila = 0; fila < M.size(); fila++) {
+        for (int columna = 0; columna < M[fila].size(); columna++) {
+            std::cout << M[fila][columna] << " ";
+        }
+        std::cout << '\n';
+    }
+}
+
+std::vector<std::vector<int>> CrearMatrizAleatoriaCuadrada(int n) {
+    std::vector<std::vector<int>> M(n, std::vector<int>(n));
+
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> dist(1, 10);
+
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            M[i][j] = dist(gen);
+        }
+    }
+
+    return M;
+}
+
 // Algoritmo clasico
 
 std::vector<std::vector<int>> matrix_multiplication(
