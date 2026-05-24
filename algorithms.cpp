@@ -13,9 +13,12 @@
 
 // Algoritmo clasico
 
-std::vector<std::vector<int>> matrix_multiplication(std::vector<std::vector<int>>& A, std::vector<std::vector<int>>& B){
+std::vector<std::vector<int>> matrix_multiplication(
+    const std::vector<std::vector<int>>& A, 
+    const std::vector<std::vector<int>>& B
+){
     int n = A.size(); // Asumimos matriz cuadrada, filas y columnas = n
-    std::vector<std::vector<int>> C(n, std::vector<int>(n)); // Matriz resultante C=A*B
+    std::vector<std::vector<int>> C(n, std::vector<int>(n,0)); // Matriz resultante C=A*B
 
     for(int r=0; r<n; r++){
         for(int c=0; c<n; c++){
@@ -24,7 +27,6 @@ std::vector<std::vector<int>> matrix_multiplication(std::vector<std::vector<int>
             }
         }
     }
-
     return C;
 }
 
