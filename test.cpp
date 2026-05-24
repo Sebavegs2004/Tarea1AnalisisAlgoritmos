@@ -4,29 +4,17 @@
 
 #include "algorithms.cpp"
 
-int main(){
-    std::vector<std::vector<int>> A = {
-        {1, 2},
-        {3, 4}
-    };
-    std::vector<std::vector<int>> B = {
-        {1, 2},
-        {3, 4}
-    };
+int main(int argc, char* argv[]){
+    int n = std::stoi(argv[1]);
+    auto A = CrearMatrizAleatoriaCuadrada(n);
+    auto B = CrearMatrizAleatoriaCuadrada(n);
 
-    std::vector<std::vector<int>> C_clasico(2, std::vector<int>(2));
-    std::vector<std::vector<int>> C_strassen(2, std::vector<int>(2));
+    auto C_clasico = matrix_multiplication(A,B, n);
+    auto C_strassen = Strassen(A,B, A.size());
 
-    C_clasico = matrix_multiplication(A,B);
-    C_strassen = Strassen(A,B, A.size());
+    ImprimirMatriz(A, n);
+    ImprimirMatriz(B, n);
 
-    std::vector <std::vector<int>> C = std::vector<std::vector<int>>{
-        {7, 10},
-        {15, 22}
-    };
-    
-    if(C_clasico == C  && C_strassen == C){
-        std::cout<<"Respuesta correcta"<<std::endl;
-        return 0;
-    }
+    ImprimirMatriz(C_clasico, n);
+    ImprimirMatriz(C_strassen, n);
 }
