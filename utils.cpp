@@ -111,4 +111,8 @@ inline void quartiles(std::vector<double>& data, std::vector<double>& q)
     }
 }
 
+bool is_power_of_two(std::int64_t n){
+    return n>0 && (n & (n-1)) == 0;
+}
+
 #endif

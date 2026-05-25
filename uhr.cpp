@@ -41,7 +41,7 @@ int main(int argc, char *argv[])
     // Set up random number generation
     std::random_device rd;
     std::mt19937_64 rng(rd());
-    std::uniform_int_distribution<std::int64_t> u_distr(-10,10);
+    std::uniform_int_distribution<int> u_distr(-10,10);
 
     // File to write time data
     std::ofstream time_data;
@@ -52,6 +52,10 @@ int main(int argc, char *argv[])
     std::cerr << "\033[0;36mRunning tests...\033[0m" << std::endl << std::endl;
     executed_runs = 0;
     for (n = lower; n <= upper; n *= step) {
+        if (!is_power_of_two(n)) {
+            std::cerr << "n debe ser potencia de 2" << std::endl;
+            continue;
+        }
         mean_time = 0;
         time_stdev = 0;
 
@@ -74,7 +78,8 @@ int main(int argc, char *argv[])
 
             begin_time = std::chrono::high_resolution_clock::now();
             // Function to test goes here
-            C_clasico = Strassen(A,B, A.size());
+            C_strassen = Strassen(A,B, A.size());
+
             end_time = std::chrono::high_resolution_clock::now();
 
             elapsed_time = end_time - begin_time;
