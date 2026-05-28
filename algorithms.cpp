@@ -11,6 +11,7 @@
 #include <vector>
 #include <random>
 
+// Esta funcion sirve para imprimir matrices
 void ImprimirMatriz(const std::vector<std::vector<int>>& M) {
     for (int fila = 0; fila < M.size(); fila++) {
         for (int columna = 0; columna < M[fila].size(); columna++) {
@@ -20,6 +21,7 @@ void ImprimirMatriz(const std::vector<std::vector<int>>& M) {
     }
 }
 
+// Esta funcion sirve para crear matrices con valores aleatorios
 std::vector<std::vector<int>> CrearMatrizAleatoriaCuadrada(int n) {
     std::vector<std::vector<int>> M(n, std::vector<int>(n));
 
@@ -29,7 +31,7 @@ std::vector<std::vector<int>> CrearMatrizAleatoriaCuadrada(int n) {
 
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < n; j++) {
-            M[i][j] = dist(gen);
+            M[i][j] = dist(gen); // Llena la casilla de la fila i columna j con una valor aleatorio
         }
     }
 
@@ -48,7 +50,7 @@ std::vector<std::vector<int>> matrix_multiplication(
     for(int r=0; r<n; r++){
         for(int c=0; c<n; c++){
             for(int k=0; k<n; k++){
-                C[r][c] += (A[r][k]*B[k][c]);
+                C[r][c] += (A[r][k]*B[k][c]); // Multiplicamos y sumamos n valores
             }
         }
     }
@@ -66,7 +68,7 @@ std::vector<std::vector<int>> Suma(
     std::vector<std::vector<int>> C(n, std::vector<int>(n));
     for(int filas = 0; filas < n; filas++){
         for(int columnas = 0; columnas < n; columnas++){
-            C[filas][columnas] = A[filas][columnas] + B[filas][columnas];
+            C[filas][columnas] = A[filas][columnas] + B[filas][columnas]; // Sumamos
         }
     }  
     return C;
@@ -81,26 +83,28 @@ std::vector<std::vector<int>> Resta(
     std::vector<std::vector<int>> C(n, std::vector<int>(n));
     for(int filas = 0; filas < n; filas++){
         for(int columnas = 0; columnas < n; columnas++){
-            C[filas][columnas] = A[filas][columnas] - B[filas][columnas];
+            C[filas][columnas] = A[filas][columnas] - B[filas][columnas]; // Restamos
         }
     }  
     return C;
 }
 
 // Implementacion del algoritmo strassen
-std::vector<std::vector<int>> Strassen(
+std::vector<std::vector<int>> Strassen( // Pedimos como entra A, B y n 
     const std::vector<std::vector<int>>& A,
     const std::vector<std::vector<int>>& B,
-    int n
+    int n // Tamaño del largo de la matriz o alto
 ) {
-    if (n == 1){
+    if (n == 1){ // Si es que llegamos a valores escalares osea matrices de tamaño 1x1 los multiplicamos
         std::vector<std::vector<int>> C(1, std::vector<int>(1));
         C[0][0] = A[0][0] * B[0][0];
         return C;
     }
     int m;
-    m = n / 2;
+    m = n / 2; // Dividimos en 2 el largo de la matriz para poder asi crear las submatrices
 
+
+    // Instanciamos las submatrices de A y B
     std::vector<std::vector<int>> A11(m, std::vector<int>(m)); 
     std::vector<std::vector<int>> A12(m, std::vector<int>(m)); 
     std::vector<std::vector<int>> A21(m, std::vector<int>(m)); 
@@ -111,6 +115,8 @@ std::vector<std::vector<int>> Strassen(
     std::vector<std::vector<int>> B21(m, std::vector<int>(m)); 
     std::vector<std::vector<int>> B22(m, std::vector<int>(m)); 
 
+
+    // Rellenamos las submatrices A y B con sus respectivos valores segun el sector de la matriz
     for(int fila = 0; fila < m; fila++){
         for(int columna = 0; columna < m; columna++){
             A11[fila][columna] = A[fila][columna];
@@ -124,6 +130,8 @@ std::vector<std::vector<int>> Strassen(
         }
     }
 
+
+    // Llamamos a strassen para calcular M's estas son recursivas por cada subdivision se calculan M's menos cuando se llega a matrices de 1x1
     auto M1 = Strassen(Suma(A11, A22, m), Suma(B11, B22, m), m);
     auto M2 = Strassen(Suma(A21, A22, m), B11, m);
     auto M3 = Strassen(A11, Resta(B12, B22, m), m);
@@ -133,6 +141,9 @@ std::vector<std::vector<int>> Strassen(
     auto M7 = Strassen(Resta(A12, A22, m), Suma(B21, B22, m), m);
 
 
+    // Creamos las submatrices C para despues combinarlas y crear C (Cabe destacar que este paso es totalmente y necesario porque se puede llegar
+    // y calcular instanciando un C, sumando m a los indices de las filas o columnas de C12, C21, C22 y calcular las suma y resta de M's
+    // pero para efectos de seguir al pseudocodigo propuesto en el informe no se hara)
     std::vector<std::vector<int>> C11(m, std::vector<int>(m)); 
     std::vector<std::vector<int>> C12(m, std::vector<int>(m)); 
     std::vector<std::vector<int>> C21(m, std::vector<int>(m)); 
@@ -147,6 +158,8 @@ std::vector<std::vector<int>> Strassen(
         }
     }
 
+    // Instanciamos C para combinar las submatrices C's
+
     std::vector<std::vector<int>> C(n, std::vector<int>(n)); 
 
     for(int filas = 0; filas < m; filas++){
@@ -157,6 +170,8 @@ std::vector<std::vector<int>> Strassen(
             C[m + filas][m + columnas] = C22[filas][columnas];
         }
     }
+
+    // Retornamos la matriz C esta puede ser o el resultado final o el resultado de una submatriz
 
     return C;
 }
