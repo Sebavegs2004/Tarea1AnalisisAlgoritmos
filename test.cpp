@@ -9,7 +9,7 @@ int main(int argc, char* argv[]){
     auto A = CrearMatrizAleatoriaCuadrada(n);
     auto B = CrearMatrizAleatoriaCuadrada(n);
 
-    auto C_clasico = matrix_multiplication(A,B, n);
+    auto C_clasico = matrix_multiplication(A,B);
     auto C_strassen = Strassen(A,B, A.size());
 
     ImprimirMatriz(A);
