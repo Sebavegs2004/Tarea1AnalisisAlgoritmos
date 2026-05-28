@@ -100,6 +100,15 @@ std::vector<std::vector<int>> Strassen( // Pedimos como entra A, B y n
         C[0][0] = A[0][0] * B[0][0];
         return C;
     }
+
+    // Si se quiere implementar un algoritmo hibrido que combine el algoritmo clasico y strassen
+    // es necesario cambiar la condicion por el valor n0 que determina
+    // el umbral hasta donde se realiza la recursion y ademas llamar a matrix_multiplication
+    // if(n>=32){
+    //     matrix_multiplication(A,B);
+    // }
+
+
     int m;
     m = n / 2; // Dividimos en 2 el largo de la matriz para poder asi crear las submatrices
 

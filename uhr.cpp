@@ -38,10 +38,15 @@ int main(int argc, char *argv[])
     auto end_time = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double, std::milli> elapsed_time = end_time - begin_time;
 
-    // Set up random number generation
+    // Setear generador aleatorio de numeros
     std::random_device rd;
     std::mt19937_64 rng(rd());
+
+    // 1. Para generar elementos enteros aleatorios del -10 al 10
     std::uniform_int_distribution<int> u_distr(-10,10);
+
+    // 2. Para generar elementos reales aleatorios de -1 a 1
+    // std::uniform_real_distribution<double> u_distr(-1,1);
 
     // File to write time data
     std::ofstream time_data;
@@ -59,18 +64,38 @@ int main(int argc, char *argv[])
         mean_time = 0;
         time_stdev = 0;
 
-        // Test configuration goes here
+        // Inicialización de las matrices
         std::vector<std::vector<int>> A(n, std::vector<int>(n));
         std::vector<std::vector<int>> B(n, std::vector<int>(n));
-        std::vector<std::vector<int>> C_clasico(n, std::vector<int>(n));
-        std::vector<std::vector<int>> C_strassen(n, std::vector<int>(n));
+        std::vector<std::vector<int>> C(n, std::vector<int>(n));
 
+        // Asignar valores a cada elemento de la matriz
+        // 1. Para matriz completamente aleatoria
         for (std::int64_t r = 0; r < n; r++) {
             for (std::int64_t c = 0; c < n; c++) {
                 A[r][c] = u_distr(rng);
                 B[r][c] = u_distr(rng);
             }
         }
+
+        // 2. Para matriz identidad
+        // for (std::int64_t r = 0; r < n; r++) {
+        //     for (std::int64_t c = 0; c < n; c++) {
+        //         A[r][c] = (r == c);
+        //         B[r][c] = (r == c);
+        //     }
+        // }
+
+        // 3. Para matriz sparse
+        // for (std::int64_t r = 0; r < n; r++) {
+        //     for (std::int64_t c = 0; c < n; c++) {
+        //         if ((rng() % 100) < 10)
+        //             A[r][c] = u_distr(rng);
+        //         else
+        //             A[r][c] = 0;
+        //     }
+        // }
+
         // Run to compute elapsed time
         for (i = 0; i < runs; i++) {
             // Remember to change total depending on step type
@@ -78,7 +103,13 @@ int main(int argc, char *argv[])
 
             begin_time = std::chrono::high_resolution_clock::now();
             // Function to test goes here
-            C_strassen = Strassen(A,B, A.size());
+            // Para probar algoritmo clasico llamar a funcion matrix_multiplication
+            // Para probar algoritmo Strassen llamar a funcion Strassen
+
+            // C = matrix_multiplication(A,B)
+
+            C = Strassen(A,B, A.size());
+
 
             end_time = std::chrono::high_resolution_clock::now();
 
