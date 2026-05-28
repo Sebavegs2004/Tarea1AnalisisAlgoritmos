@@ -90,7 +90,7 @@ std::vector<std::vector<int>> Resta(
 }
 
 // Implementacion del algoritmo strassen
-std::vector<std::vector<int>> Strassen( // Pedimos como entra A, B y n 
+std::vector<std::vector<int>> Strassen( // Pedimos como entrada A, B y n 
     const std::vector<std::vector<int>>& A,
     const std::vector<std::vector<int>>& B,
     int n // Tamaño del largo de la matriz o alto
@@ -150,9 +150,10 @@ std::vector<std::vector<int>> Strassen( // Pedimos como entra A, B y n
     auto M7 = Strassen(Resta(A12, A22, m), Suma(B21, B22, m), m);
 
 
-    // Creamos las submatrices C para despues combinarlas y crear C (Cabe destacar que este paso es totalmente y necesario porque se puede llegar
-    // y calcular instanciando un C, sumando m a los indices de las filas o columnas de C12, C21, C22 y calcular las suma y resta de M's
-    // pero para efectos de seguir al pseudocodigo propuesto en el informe no se hara)
+    // Creamos las submatrices C para luego combinarlas en la matriz final C.
+    // Nota: Este paso es innecesario si se calculan las sumas y restas de M directamente
+    // sobre los cuadrantes de la matriz C final (usando offsets de tamaño m). 
+    // Se mantiene de esta forma para seguir fielmente el pseudocódigo del informe.
     std::vector<std::vector<int>> C11(m, std::vector<int>(m)); 
     std::vector<std::vector<int>> C12(m, std::vector<int>(m)); 
     std::vector<std::vector<int>> C21(m, std::vector<int>(m)); 
